@@ -79,7 +79,6 @@ export default function Home() {
 
   useEffect(() => {
     localStorage.setItem('cart', JSON.stringify(cart));
-    fetchProducts();
   }, [cart]);
 
   const fetchProducts = async () => {
@@ -281,7 +280,6 @@ export default function Home() {
           <div className="flex items-center justify-between w-[90%] mx-auto">
             <Image src="/favicon.ico" width={40} height={40} alt="Logo" />
 
-            {/* Menu Desktop */}
             <div className="hidden md:flex gap-10 text-[#5F5F5F] text-lg items-center">
               <a className="text-[var(--primary)]" href="#">Início</a>
               <a className="hover:text-[var(--primary)] transition-all" href="#sobre">Sobre</a>
@@ -334,7 +332,7 @@ export default function Home() {
                             Dashboard
                           </button>
                           
-                          {session?.user.name === 'zryang' && (
+                          {status === "authenticated" && session.user?.name === 'zryang' && (
                             <button
                               onClick={navigateToAdmin}
                               className="flex items-center gap-2 w-full px-4 py-2 text-sm text-white/80 hover:bg-white/10 transition-colors"
@@ -366,7 +364,6 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Menu Mobile - Botão */}
             <div className="md:hidden flex items-center gap-3">
               <a href="/Carrinho" className="relative">
                 <div className="w-[40px] h-[40px] bg-white/2 flex items-center justify-center rounded-full border border-white/10 hover:cursor-pointer hover:bg-[var(--primary)] transition-all group">
@@ -393,7 +390,6 @@ export default function Home() {
           </div>
         </nav>
 
-        {/* Menu Mobile - Conteúdo */}
         {mobileMenuOpen && (
           <div 
             ref={mobileMenuRef}
@@ -457,7 +453,7 @@ export default function Home() {
                     Dashboard
                   </button>
 
-                  {session?.user.name === 'zryang' && (
+                  {status === "authenticated" && session.user?.name === 'zryang' && (
                     <button
                       onClick={navigateToAdmin}
                       className="w-full py-3 px-6 bg-white/5 rounded-lg text-white font-medium hover:bg-white/10 transition-colors flex items-center gap-2 justify-center"
@@ -737,10 +733,4 @@ export default function Home() {
       </footer>
     </>
   );
-}
-
-function getYouTubeId(url) {
-  const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
-  const match = url.match(regExp);
-  return (match && match[2].length === 11) ? match[2] : null;
 }
