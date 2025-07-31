@@ -13,27 +13,53 @@ import toast, { Toaster } from 'react-hot-toast';
 import { useSession, signIn, signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
+interface Product {
+  id: string;
+  key: string;
+  image: string;
+  name: string;
+  price: number;
+  description?: string;
+  video?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+interface CartItem {
+  id: string;
+  key: string;
+  imagem: string;
+  nome: string;
+  valor: number;
+  quantity: number;
+}
+
+interface FAQ {
+  question: string;
+  answer: string;
+}
+
 export default function Home() {
-  const [openIndex, setOpenIndex] = useState(null);
-  const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [selectedProduct, setSelectedProduct] = useState(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
-  const [cart, setCart] = useState([]);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [openIndex, setOpenIndex] = useState<number | null>(null);
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState<boolean>(false);
+  const [cart, setCart] = useState<CartItem[]>([]);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false);
   const { data: session, status } = useSession();
   const router = useRouter();
-  const dropdownRef = useRef(null);
-  const mobileMenuRef = useRef(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  const mobileMenuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
         setIsProfileDropdownOpen(false);
       }
-      if (mobileMenuRef.current && !mobileMenuRef.current.contains(event.target) && 
-          !event.target.closest('.mobile-menu-button')) {
+      if (mobileMenuRef.current && !mobileMenuRef.current.contains(event.target as Node) && 
+          !(event.target as Element).closest('.mobile-menu-button')) {
         setMobileMenuOpen(false);
       }
     };
@@ -72,11 +98,11 @@ export default function Home() {
     fetchProducts();
   }, []);
 
-  const toggle = (index) => {
+  const toggle = (index: number) => {
     setOpenIndex(openIndex === index ? null : index);
   };
 
-  const openProductModal = (product) => {
+  const openProductModal = (product: Product) => {
     setSelectedProduct(product);
     setIsModalOpen(true);
     document.body.style.overflow = 'hidden';
@@ -95,7 +121,7 @@ export default function Home() {
     setMobileMenuOpen(!mobileMenuOpen);
   };
 
-  const addToCart = (product) => {
+  const addToCart = (product: Product) => {
     const existingItem = cart.find(item => item.id === product.id);
     
     if (existingItem) {
@@ -103,7 +129,7 @@ export default function Home() {
       return;
     }
     
-    const simplifiedProduct = {
+    const simplifiedProduct: CartItem = {
       id: product.id,
       key: product.key,
       imagem: product.image,
@@ -139,12 +165,12 @@ export default function Home() {
     router.push('/admin');
   };
 
-  const navigateTo = (path) => {
+  const navigateTo = (path: string) => {
     router.push(path);
     setMobileMenuOpen(false);
   };
 
-  const faqs = [
+  const faqs: FAQ[] = [
     {
       question: "Onde posso obter suporte?",
       answer: "Acesse o nosso Discord e crie um ticket. Nossa equipe irá atendê-lo imediatamente.",
@@ -165,6 +191,12 @@ export default function Home() {
         <div className="w-16 h-16 border-4 border-[#7939FF] border-t-transparent rounded-full animate-spin"></div>
       </div>
     );
+  }
+
+  function getYouTubeId(url: string): string | null {
+    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+    const match = url.match(regExp);
+    return (match && match[2].length === 11) ? match[2] : null;
   }
 
   return (
