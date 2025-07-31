@@ -83,7 +83,7 @@ export default function Home() {
 
   const fetchProducts = async () => {
     try {
-      const response = await fetch('http://198.1.195.47:3000/api/produtos/getProduct');
+      const response = await fetch('https://galaxy-graphics-web-site-zs4i.vercel.app/api/produtos/getProduct');
       const data = await response.json();
       setProducts(data);
     } catch (error) {
