@@ -25,16 +25,15 @@ export default function Carrinho() {
     carregarCarrinho();
   }, []);
 
-  const handleSelecionarPagamento = (metodo) => {
+  const handleSelecionarPagamento = (metodo: string) => {
     if (metodo == "paypal") {
       return toast.error('Método de pagamento indisponível!')
     }
-
     setMetodoPagamento(metodo);
     toast.success('Método de pagamento selecionado com sucesso!')
   };
 
-  const removerItem = (id) => {
+  const removerItem = (id:number) => {
     if (typeof window !== 'undefined') {
       const carrinhoAtual = JSON.parse(localStorage.getItem('cart')) || [];
       const novoCarrinho = carrinhoAtual.filter(item => item.id !== id);
